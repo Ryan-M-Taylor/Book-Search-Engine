@@ -20,7 +20,7 @@ const resolvers = {
   },
   Mutation: {
     // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
-    async addUser(_, { userInput }) {
+    async addUser(_, userInput ) {
       const user = await User.create(userInput);
 
       if (!user) {

@@ -30,8 +30,9 @@ const resolvers = {
       return { token, user };
     },
     // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
-    async login(_, { username, password }) {
-      const user = await User.findOne({ username });
+    async login(_, { email, password }) {
+
+      const user = await User.findOne({ email });
 
       if (!user) {
         return { message: "Can't find this user" };

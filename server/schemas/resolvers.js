@@ -1,10 +1,11 @@
 // import user model
-const { User, Book } = require('../models');
+const { User } = require('../models');
 // import sign token function from auth
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
+    // get a single user by either their id or their username
     async me(_, __, { user }) {
       if (!user) {
         return null;
@@ -16,16 +17,9 @@ const resolvers = {
 
       return userData;
     },
-    async getAllBooks() {
-      const books = await Book.find();
-      return books;
-    },
-    async getBookById(_, { bookId }) {
-      const book = await Book.findOne({ _id: bookId });
-      return book;
-    },
   },
   Mutation: {
+    // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
     async addUser(_, { userInput }) {
       const user = await User.create(userInput);
 
@@ -35,6 +29,7 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
     async login(_, { username, password }) {
       const user = await User.findOne({ username });
 
@@ -51,6 +46,8 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
+    // user comes from `req.user` created in the auth middleware function
     async saveBook(_, { bookInput }, { user }) {
       try {
         const updatedUser = await User.findOneAndUpdate(
@@ -64,6 +61,7 @@ const resolvers = {
         return err;
       }
     },
+    // remove a book from `savedBooks`
     async deleteBook(_, { bookId }, { user }) {
       const updatedUser = await User.findOneAndUpdate(
         { _id: user._id },
@@ -74,22 +72,6 @@ const resolvers = {
         return { message: "Couldn't find user with this id!" };
       }
       return updatedUser;
-    },
-    async addBook(_, { bookInput }) {
-      const book = await Book.create(bookInput);
-      return book;
-    },
-    async updateBook(_, { bookId, bookInput }) {
-      const updatedBook = await Book.findOneAndUpdate(
-        { _id: bookId },
-        { $set: bookInput },
-        { new: true }
-      );
-      return updatedBook;
-    },
-    async deleteBookById(_, { bookId }) {
-      const deletedBook = await Book.findOneAndDelete({ _id: bookId });
-      return deletedBook;
     },
   },
 };

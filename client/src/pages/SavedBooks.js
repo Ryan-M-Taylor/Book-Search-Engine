@@ -6,6 +6,8 @@ import { REMOVE_BOOK } from '../utils/mutations';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
+import { Link } from 'react-router-dom';
+
 const SavedBooks = () => {
   // use useQuery hook to make query request
   const { loading, data: userData } = useQuery(GET_ME);
@@ -48,6 +50,7 @@ const SavedBooks = () => {
         </Container>
       </Jumbotron>
       <Container>
+        {/* <Link to='/'>← Back to Search</Link> */}
         <h2>
           {me.savedBooks.length
             ? `Viewing ${me.savedBooks.length} saved ${me.savedBooks.length === 1 ? 'book' : 'books'}:`

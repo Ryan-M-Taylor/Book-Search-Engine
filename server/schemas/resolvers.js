@@ -50,25 +50,20 @@ const resolvers = {
     // user comes from `req.user` created in the auth middleware function
     async saveBook(parent, { bookData }, context) {
       if (context.user) {
-        try {
           const updatedUser = await User.findOneAndUpdate(
-            { _id: user._id },
-            { $addToSet: { savedBooks: bookData } },
-            { new: true, runValidators: true }
-          ).populate("savedBooks");
+            { _id: context.user._id },
+            { $push: { savedBooks: bookData } },
+            { new: true}
+          )
           return updatedUser;
-        } catch (err) {
-          console.log(err);
-          return err;
-        }
-      }
+        } 
+        throw new AuthenticationError("You need to be logged in!");
 
-      throw new AuthenticationError("You need to be logged in!");
     },
     // remove a book from `savedBooks`
-    async deleteBook(parent, { bookId }, { user }) {
+    async deleteBook(parent, { bookId }, context) {
       const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id },
+        { _id: context.user._id },
         { $pull: { savedBooks: { bookId } } },
         { new: true }
       ).populate("savedBooks");

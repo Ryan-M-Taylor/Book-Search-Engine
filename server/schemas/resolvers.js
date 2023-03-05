@@ -61,12 +61,12 @@ const resolvers = {
 
     },
     // remove a book from `savedBooks`
-    async deleteBook(parent, { bookId }, context) {
+    async removeBook(parent, { bookId }, context) {
       const updatedUser = await User.findOneAndUpdate(
         { _id: context.user._id },
         { $pull: { savedBooks: { bookId } } },
         { new: true }
-      ).populate("savedBooks");
+      )
       if (!updatedUser) {
         return { message: "Couldn't find user with this id!" };
       }

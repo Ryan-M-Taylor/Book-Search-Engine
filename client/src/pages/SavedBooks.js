@@ -27,9 +27,12 @@ const SavedBooks = () => {
 
     try {
       const { data } = await removeBook({
-        variables: {me: { bookId }},
+        variables: { bookId },
       });
 
+      if (error) {
+        throw new Error('something went wrong!');
+      }
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -65,7 +68,7 @@ const SavedBooks = () => {
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book._id)}>
+                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
                     Delete this Book!
                   </Button>
                 </Card.Body>

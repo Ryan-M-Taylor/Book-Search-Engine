@@ -1,11 +1,16 @@
-import React from 'react';
-import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ME } from '../utils/queries';
-import { REMOVE_BOOK } from '../utils/mutations';
-import Auth from '../utils/auth';
-import { getSavedBookIds, removeBookId } from '../utils/localStorage';
-
+import React from "react";
+import {
+  Jumbotron,
+  Container,
+  CardColumns,
+  Card,
+  Button,
+} from "react-bootstrap";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_ME } from "../utils/queries";
+import { REMOVE_BOOK } from "../utils/mutations";
+import Auth from "../utils/auth";
+import { removeBookId } from "../utils/localStorage";
 
 const SavedBooks = () => {
   // use useQuery hook to make query request
@@ -18,7 +23,6 @@ const SavedBooks = () => {
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
-
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -31,7 +35,7 @@ const SavedBooks = () => {
       });
 
       if (error) {
-        throw new Error('something went wrong!');
+        throw new Error("something went wrong!");
       }
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
@@ -47,7 +51,7 @@ const SavedBooks = () => {
 
   return (
     <>
-      <Jumbotron fluid className='text-light bg-dark'>
+      <Jumbotron fluid className="text-light bg-dark">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
@@ -56,19 +60,30 @@ const SavedBooks = () => {
         {/* <Link to='/'>← Back to Search</Link> */}
         <h2>
           {me.savedBooks.length
-            ? `Viewing ${me.savedBooks.length} saved ${me.savedBooks.length === 1 ? 'book' : 'books'}:`
-            : 'You have no saved books!'}
+            ? `Viewing ${me.savedBooks.length} saved ${
+                me.savedBooks.length === 1 ? "book" : "books"
+              }:`
+            : "You have no saved books!"}
         </h2>
         <CardColumns>
           {me.savedBooks.map((book) => {
             return (
-              <Card key={book.bookId} border='dark'>
-                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+              <Card key={book.bookId} border="dark">
+                {book.image ? (
+                  <Card.Img
+                    src={book.image}
+                    alt={`The cover for ${book.title}`}
+                    variant="top"
+                  />
+                ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
-                  <p className='small'>Authors: {book.authors}</p>
+                  <p className="small">Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                  <Button
+                    className="btn-block btn-danger"
+                    onClick={() => handleDeleteBook(book.bookId)}
+                  >
                     Delete this Book!
                   </Button>
                 </Card.Body>
